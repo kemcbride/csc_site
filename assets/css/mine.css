@@ -1,0 +1,306 @@
+/*
+  * Theme-Specific Style Sheet
+  *
+  * Theme: 0
+  * 	Neopets Default
+  * 	Black, yellow, and all around Neopets goodness
+*/
+
+
+/********************************************************************/
+/* HTML Tag Styles **************************************************/
+/********************************************************************/
+
+	BODY {
+		background-color: #CFCFCF;
+		background-image: url("../images/24-31-17.gif");
+	}
+
+	A:Link, A:Visited {
+		color: #2E72C0;
+	}
+
+	A:Hover {
+		color: #FFB300;
+	}
+
+/********************************************************************/
+/* Foundation IDs ***************************************************/
+/********************************************************************/
+
+	#main, .main_theme {
+		border-left: 2px solid #a568b1;
+		border-right: 2px solid #a568b1;
+        font-family: "Wild Words", "Chinacat", serif;
+	}
+
+	#header {
+		background-color: #FFD026;
+		background-image: url("http://images.neopets.com/themes/000_def_f65b1/banner_bg.png");
+		border-bottom: 2px solid #2343ed;
+        font-family: "Heffaklump", sans-serif;
+	}
+
+	#footer {
+		background-color: #FFD026;
+		background-image: url("http://images.neopets.com/themes/046_ff_sep2017/footer_bg.png");
+	}
+
+
+/********************************************************************/
+/* Header Stuff *****************************************************/
+/********************************************************************/
+
+/* Navigation.  Duh.  */
+	ul.dropdown {
+		xborder: 1px solid #2343ed;
+		background-color: #834d96;
+	}
+
+	LI:hover UL.dropdown A, LI.over UL.dropdown A {
+		color: #ffffff;
+	}
+
+	LI:hover UL.dropdown A:Hover, LI.over UL.dropdown A:hover {
+		color: #000000;
+	}
+
+    .nav_image {
+        font-size: 30px;
+        margin: 0 15px;
+    }
+
+    /* I am beginning to add my own stuff to this file now..
+     * Getting dangerous... */
+    .nav_image a {
+        color: black;
+    }
+    .nav_image a:hover {
+        color: #445544;
+    }
+
+/********************************************************************/
+/* Sidebar Classes **************************************************/
+/********************************************************************/
+
+	.sidebarModule {
+		border: 2px solid #E4E4E4;
+	}
+
+	.sidebarTable {
+		border: 2px solid #C9C9C9;
+	}
+
+	.sidebarHeader {
+		background-color: #834d96;
+		border-bottom: 2px solid #C9C9C9;
+	}
+
+	.sidebarHeader A:Link, .sidebarHeader A:Hover, .sidebarHeader A:Visited {
+		color: #fff;
+	}
+
+
+/********************************************************************/
+/* Content Classes **************************************************/
+/********************************************************************/
+
+/* We need a few styles to make a module work */
+	.contentModuleHeader {
+		background-color: #000000;
+		color: #FFFFFF;
+	}
+
+	.contentModuleHeader A:Link, .contentModuleHeader A:Hover, .contentModuleHeader A:Visited {
+		color: #C5C5C5;
+	}
+
+	.moreLink {
+		border: 1px solid #8F8F8F;
+	}
+
+	.contentModuleHeaderAlt {
+		background-color: #2367B5;
+		color: #FFFFFF;
+	}
+
+	.contentModuleHeaderAlt A:Link, .contentModuleHeaderAlt A:Hover, .contentModuleHeaderAlt A:Visited {
+		color: #D5E8FE;
+	}
+
+	.moreLinkAlt {
+		border: 1px solid #85AEDD;
+	}
+
+/********************************************************************/
+/* Other Crap *******************************************************/
+/********************************************************************/
+
+	.category {
+		background-color:#295383;
+		color:#ffffff;
+	}
+
+/********************************************************************/
+/* My Custom Fonts***************************************************/
+/********************************************************************/
+
+    @font-face {
+        font-family: "Augie";
+        src: url("../fonts/augie/augie.eot"),
+        url("../fonts/augie/augie.ttf") format("truetype"),
+        url("../fonts/augie/augie.woff") format("woff"),
+        url("../fonts/augie/augie.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Chinacat";
+        src: url("../fonts/chinacat/chinrg__.eot"),
+        url("../fonts/chinacat/chinrg__.ttf") format("truetype"),
+        url("../fonts/chinacat/chinrg__.woff") format("woff"),
+        url("../fonts/chinacat/chinrg__.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Chinacat Thin";
+        src: url("../fonts/chinacat/chint___.eot"),
+        url("../fonts/chinacat/chint___.ttf") format("truetype"),
+        url("../fonts/chinacat/chint___.woff") format("woff"),
+        url("../fonts/chinacat/chint___.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Coolvetica";
+        src: url("../fonts/coolvetica/coolvetica rg.eot"),
+        url("../fonts/coolvetica/coolvetica rg.ttf") format("truetype"),
+        url("../fonts/coolvetica/coolvetica rg.woff") format("woff"),
+        url("../fonts/coolvetica/coolvetica rg.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Heffaklump";
+        src: url("../fonts/heffaklump/Heffaklump.eot"),
+        url("../fonts/heffaklump/Heffaklump.ttf") format("truetype"),
+        url("../fonts/heffaklump/Heffaklump.woff") format("woff"),
+        url("../fonts/heffaklump/Heffaklump.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Miso";
+        src: url("../fonts/miso/miso-regular.eot"),
+        url("../fonts/miso/miso-regular.ttf") format("truetype"),
+        url("../fonts/miso/miso-regular.woff") format("woff"),
+        url("../fonts/miso/miso-regular.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Wendy";
+        src: url("../fonts/wendy/wendy.eot"),
+        url("../fonts/wendy/wendy.ttf") format("truetype"),
+        url("../fonts/wendy/wendy.woff") format("woff"),
+        url("../fonts/wendy/wendy.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Wild Words";
+        src: url("../fonts/wild_words/CC Wild Words Roman.eot"),
+        url("../fonts/wild_words/CC Wild Words Roman.ttf") format("truetype"),
+        url("../fonts/wild_words/CC Wild Words Roman.woff") format("woff"),
+        url("../fonts/wild_words/CC Wild Words Roman.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Zud Juice";
+        src: url("../fonts/zud_juice/ZUDJUICE.eot"),
+        url("../fonts/zud_juice/ZUDJUICE.ttf") format("truetype"),
+        url("../fonts/zud_juice/ZUDJUICE.woff") format("woff"),
+        url("../fonts/zud_juice/ZUDJUICE.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Zud Juice Bold";
+        src: url("../fonts/zud_juice/ZUDJB___.eot"),
+        url("../fonts/zud_juice/ZUDJB___.ttf") format("truetype"),
+        url("../fonts/zud_juice/ZUDJB___.woff") format("woff"),
+        url("../fonts/zud_juice/ZUDJB___.otf") format("opentype");
+    }
+
+    @font-face {
+        font-family: "Zud Juice Italic";
+        src: url("../fonts/zud_juice/ZUDJI___.eot"),
+        url("../fonts/zud_juice/ZUDJI___.ttf") format("truetype"),
+        url("../fonts/zud_juice/ZUDJI___.woff") format("woff"),
+        url("../fonts/zud_juice/ZUDJI___.otf") format("opentype");
+    }
+
+
+/********************************************************************/
+/* Stuff ************************************************************/
+/********************************************************************/
+
+    .itg {
+        font-family: "Miso", "Wendy", sans-serif;
+        font-size: 1em;
+    }
+
+    .itg_block {
+        font-family: "Wendy", "Miso", monospace;
+        font-size: 2em;
+        line-height: 80%;
+    }
+    .itg .row {
+        color: white;
+        background: black;
+    }
+
+    .itg_block ul {
+        list-style-type: none;
+    }
+    
+
+    /* simply love heart colors on menu i think*/
+    /* red */
+    /* "#FF3C23", */
+    /* "#FF003C", */
+    /* pink */
+    /* "#C1006F", */
+    /* purple*/
+    /* "#8200A1", */
+    /* blue */
+    /* "#413AD0", */
+    /* ... uhhhh idk.... */
+    /* "#0073FF", */
+    /* "#00ADC0", */
+    /* "#5CE087", */
+    /* "#AEFA44", */
+    /* "#FFFF00", */
+    /* "#FFBE00", */
+    /* "#FF7D00" */
+
+    .fantastic {
+        color: #00c4e7;
+    }
+
+    .excellent {
+        color: #d89e00;
+    }
+
+    .great {
+        color: #459a00;
+    }
+
+    .good {
+        color: #6666cc;
+    }
+
+    .wayoff {
+        color: #f59331;
+    }
+
+    .miss {
+        color: red;
+    }
+
+    .mine {
+        color: red;
+    }

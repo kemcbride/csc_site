@@ -1,0 +1,15 @@
+bin
+include
+lib
+share
+__pycache__
+*/__pycache__
+assets/images
+assets/fonts
+assets/css/bootstrap.min.css
+itg2/greenguy
+itg2/peranis
+itg2/old_desktop_itgdata
+**.pyc
+**.swp
+**.swo

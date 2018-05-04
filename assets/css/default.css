@@ -1,0 +1,292 @@
+
+/*
+  * Global Stylesheet
+  * TAKE THAT, IE5!
+  *
+  * Colours, images, and any other theme-specific styles are stored in
+  * theme-specific CSS files that are called by template.
+  * How brilliantly clever, eh?
+*/
+
+
+/********************************************************************/
+/* HTML Tag Styles **************************************************/
+/********************************************************************/
+
+	BODY {
+		margin: 0px;
+		padding: 0px;
+
+		text-align: center;
+	}
+
+	BODY, TD, SELECT, INPUT {
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		font-size: 9pt;
+	}
+
+	a { font-weight: bold; }
+	a.light { font-weight: normal; }
+
+	a:link, a:visited, a:hover {
+		text-decoration: none;
+	}
+
+/********************************************************************/
+/* Foundation IDs ***************************************************/
+/********************************************************************/
+
+/* The outer div for centering and such */
+	#main {
+		background-color: #FFFFFF;
+		width: 996px;
+		/*height: 100%;*/
+
+		text-align: left;
+		vertical-align: top;
+
+		margin: 0 auto;
+	}
+
+	#main.premium_bar_spacer {
+		margin-bottom: 20px;
+	}
+
+/* Totally for the header bar at the top */
+	#header {
+		width: 996px;
+		height: 77px;
+	}
+
+/* Your mom... I mean, page content */
+	#content {
+		width: 996px;
+		vertical-align: top;
+		clear: left;
+	}
+
+/* Footer, now with 33% more feet */
+	#footer {
+		width: 996px;
+		height: 150px;
+		position: relative;
+	}
+
+
+/********************************************************************/
+/* Header Stuff *****************************************************/
+/********************************************************************/
+
+	#navigation {
+		text-align: left;
+		width: 100%;
+		height: 38px;
+	}
+
+	#template_nav {
+		height: 38px;
+		list-style: none;
+		padding: 0;
+		margin: 0px 0px 0px 0px;
+	}
+
+	ul.dropdown {
+		width: auto;
+
+		list-style: none;
+		white-space: nowrap;
+
+		position: absolute;
+		top: 30px;
+		left: 10px;
+
+		padding: 4px 7px 4px 4px;
+		margin: 0px;
+	}
+
+	li.nav_image {
+		float: right;
+		position: relative;
+		list-style: none;
+		z-index: 9000;
+		/* margin-left: 0px; */
+        margin-top: 4%;
+	}
+
+	li ul.dropdown {
+		display: none;
+		text-align: left;
+		list-style: none;
+		z-index: 5;
+		font-size: 8pt;
+		line-height: 14px;
+		text-decoration: none;
+		font-weight: bold;
+	}
+
+	li>ul {
+		top: auto;
+		left: auto;
+	}
+
+	LI:hover UL.dropdown, LI.over UL.dropdown {
+		display: block;
+	}
+
+
+/* The rest of the space is devoted to the user info */
+	.user {
+		height: 36px;
+
+		font-weight: bold;
+
+		text-align: right;
+		vertical-align: middle;
+
+		padding-right: 7px;
+	}
+
+
+/********************************************************************/
+/* Sidebar Classes **************************************************/
+/********************************************************************/
+
+/* Sidebar with the Neopet, etc. */
+	.sidebar {
+		background-color: #EFEFEF;
+
+		height: auto;
+
+		text-align: center;
+		vertical-align: top;
+
+		padding-top: 7px;
+		padding-bottom: 7px;
+	}
+
+/* We need a few styles to make a side module work */
+	.sidebarModule {
+		display: table;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+/* Styles for our nice header */
+	.sidebarHeader {
+		height: 22px;
+
+		font-weight: bold;
+		text-align: left;
+
+		padding-left: 3px;
+	}
+
+	.sidebarHeader A:Link, .sidebarHeader A:Hover, .sidebarHeader A:Visited {
+		text-decoration: none;
+	}
+
+/********************************************************************/
+/* Content Classes **************************************************/
+/********************************************************************/
+
+/* Sidebar with the Neopet, etc. */
+	.content {
+		height: auto;
+
+		text-align: left;
+		vertical-align: top;
+
+		padding: 7px;
+	}
+
+/* We need a few styles to make a module work */
+	.contentModule {
+		height: 100%;
+		border: 2px solid #E4E4E4;
+	}
+
+	.contentModuleTable {
+		width: 100%;
+		height: 100%;
+		border: 2px solid #C9C9C9;
+	}
+
+	.contentModuleHeader, .contentModuleHeaderAlt {
+		height: 22px;
+
+		font-size: 9pt;
+		font-weight: bold;
+		text-align: left;
+
+		padding-left: 3px;
+	}
+
+	.contentModuleHeader A:Link, .contentModuleHeader A:Visited, .contentModuleHeader A:Hover,
+	.contentModuleHeaderAlt A:Link, .contentModuleHeaderAlt A:Visited, .contentModuleHeaderAlt A:Hover {
+		text-decoration: none;
+	}
+
+	.moreLink, .moreLinkAlt {
+		font-size: 7pt;
+		float: right;
+
+		padding-left: 3px;
+		padding-right: 3px;
+		padding-bottom: 2px;
+		line-height: 10px;
+	}
+
+	.contentModuleContent {
+		width: 100%;
+		height: 100%;
+
+		position: relative;
+
+		background-color: #FFFFFF;
+	}
+
+	.moreLinkBottom {
+		height: 20px;
+		border-top: 1px solid #E4E4E4;
+	}
+
+	.moreLinkBottom, .moreLinkBottom A:Link, .moreLinkBottom A:Visited {
+		color: #747474;
+		font-weight: bold;
+	}
+
+
+/********************************************************************/
+/* Misc Classes of Doom *********************************************/
+/********************************************************************/
+
+/* Page Header */
+	.page_header {
+		font-weight: bold;
+		margin-bottom: 4px;
+		clear: both;
+	}
+
+/* Homepage Only styles */
+	.marqueeSlot, .marqueeSlotOn {
+		width: 150px;
+		height: 50px;
+	}
+
+	.marqueeSlotOn {
+		font-weight: bold;
+	}
+
+	.spotlightWinner {
+		font-size: 8pt;
+	}
+
+	.spotlight img, .latestGamesImg {
+		margin-left:5px;
+		border: 1px solid #000;
+		margin-right: 5px;
+	}
+
+	.bar {
+		border-top:1px solid #E4E4E4
+	}
