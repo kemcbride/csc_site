@@ -4,6 +4,7 @@ lib
 share
 __pycache__
 */__pycache__
+pip-selfcheck.json
 assets/images
 assets/fonts
 assets/css/bootstrap.min.css
