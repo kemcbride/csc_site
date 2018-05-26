@@ -29,15 +29,13 @@
 /********************************************************************/
 
 	#main, .main_theme {
-		border-left: 2px solid #a568b1;
-		border-right: 2px solid #a568b1;
         font-family: "Wild Words", "Chinacat", serif;
 	}
 
 	#header {
 		background-color: #FFD026;
 		background-image: url("http://images.neopets.com/themes/000_def_f65b1/banner_bg.png");
-		border-bottom: 2px solid #2343ed;
+		border-bottom: 2px solid black;
         font-family: "Heffaklump", sans-serif;
 	}
 
@@ -239,44 +237,27 @@
 /********************************************************************/
 
     .itg {
-        font-family: "Miso", "Wendy", sans-serif;
-        font-size: 1em;
+        font-family: "Miso", sans-serif;
+        font-size: 1rem;
+        border-top: 2px black solid;
+        border-bottom: 3px black solid;
     }
 
     .itg_block {
-        font-family: "Wendy", "Miso", monospace;
-        font-size: 2em;
+        font-family: "Wendy", monospace;
+        font-size: 2rem;
         line-height: 80%;
-    }
-    .itg .row {
         color: white;
-        background: black;
+    }
+
+    .itg .row {
+        background: #232b2b;
     }
 
     .itg_block ul {
         list-style-type: none;
     }
     
-
-    /* simply love heart colors on menu i think*/
-    /* red */
-    /* "#FF3C23", */
-    /* "#FF003C", */
-    /* pink */
-    /* "#C1006F", */
-    /* purple*/
-    /* "#8200A1", */
-    /* blue */
-    /* "#413AD0", */
-    /* ... uhhhh idk.... */
-    /* "#0073FF", */
-    /* "#00ADC0", */
-    /* "#5CE087", */
-    /* "#AEFA44", */
-    /* "#FFFF00", */
-    /* "#FFBE00", */
-    /* "#FF7D00" */
-
     .fantastic {
         color: #00c4e7;
     }

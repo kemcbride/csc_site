@@ -25,11 +25,12 @@ def template_highscore_song(xml):
         song_template = Template(tmpl_file.read())
 
     return song_template.render(
-        song_name=hs.song,
+        song_name=hs.song_title,
         pct_score=round(hs.pct_score, 2),
+        length=hs.song_length,
         mods=hs.modifiers,
-        # difficulty_level=hs.grade, # not right
         difficulty=hs.difficulty,
+        grade=hs.grade,
         radar_values=hs.radar,
         hold_note_scores=hs.holdnotes,
         tap_note_scores=hs.tapnotes,
@@ -58,9 +59,9 @@ class Website(object):
     @cherrypy.expose
     def itg(self):
         data = [
-            './itg2/{}/Stats.xml'.format(f)
-            for f in os.listdir('itg2')
-            if os.path.exists('./itg2/{}/Stats.xml'.format(f))
+            './itg2/data/{}/Stats.xml'.format(f)
+            for f in os.listdir('itg2/data')
+            if os.path.exists('./itg2/data/{}/Stats.xml'.format(f))
             ]
         xmls = [ET.parse(datum) for datum in data]
 
@@ -69,7 +70,7 @@ class Website(object):
         for song_highscore in root[-3].getchildren():
             tmpled_songs.append(template_highscore_song(song_highscore))
 
-        content = '<br>'.join(tmpled_songs)
+        content = ''.join(tmpled_songs)
 
         with open(TMPL_FMT.format('basic'), 'r') as tmpl_file:
             basic_template = Template(tmpl_file.read())
@@ -78,9 +79,9 @@ class Website(object):
     @cherrypy.expose
     def itg_nice(self):
         data = [
-            './itg2/{}/Stats.xml'.format(f)
-            for f in os.listdir('itg2')
-            if os.path.exists('./itg2/{}/Stats.xml'.format(f))
+            './itg2/data/{}/Stats.xml'.format(f)
+            for f in os.listdir('itg2/data')
+            if os.path.exists('./itg2/data/{}/Stats.xml'.format(f))
             ]
         xml = ET.parse(data[0])
         del data
@@ -112,9 +113,9 @@ class Website(object):
     @cherrypy.tools.json_out()
     def itg_json(self):
         fpaths = [
-            './itg2/{}/Stats.xml'.format(f)
-            for f in os.listdir('itg2')
-            if os.path.exists('./itg2/{}/Stats.xml'.format(f))
+            './itg2/data/{}/Stats.xml'.format(f)
+            for f in os.listdir('itg2/data')
+            if os.path.exists('./itg2/data/{}/Stats.xml'.format(f))
             ]
         xmls = [ET.parse(datum) for datum in fpaths]
         response_out = {}
