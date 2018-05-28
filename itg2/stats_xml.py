@@ -1,40 +1,90 @@
 import os
+import sys
 import json
 import pandas as pd
 
+# general TODO:
+# - use get() instead of .attrib[]
+# - use find() instead of iterating over children for a tag
+#    -- what about if find fails? huh?!?!
 
 class HighScore(object):
     """ This is for a single "score" object from a Stats.xml """
     DELIM = ' · '
     def __init__(self, root):
-        # root here is a HighScoreForASongAndSteps thing
+        if root.tag == "HighScoreForASongAndSteps": # recent scores
+            self._hs4song_n_steps_init(root)
 
-        raw_song = root.find('Song')
-        self.song = HighScore.DELIM.join([s for s in raw_song.attrib['Dir'].split('/')[1:] if s])
-        self.song_title = self.song.split(HighScore.DELIM)[-1]
+        elif root.tag == "Song": # top scores
+            succeeded = self._song_init(root)
+            if not succeeded:
+                raise KeyError('Failed to find HighScore in _song_init')
+
+        else:
+            raise ValueError('Unknown Root Tag: {}'.format(root.tag))
+
+    def _hs4song_n_steps_init(self, root):
+        self._song_title_init(root.find('Song'))
+        self._difficuty_steps_init(root.find('Steps'))
 
         score = root.find('HighScore')
+        self._hs_init(score)
 
+    def _song_init(self, root):
+        """ This function actually returns something,
+        since it can fail (or, i have observed it possibly failing
+        """
+        self._song_title_init(root)
+        
+        song_steps = root.getchildren()[0]
+        self._difficuty_steps_init(song_steps)
+
+        hiscore_list = song_steps.getchildren()[0].getchildren()
+        try:
+            idx = [e.tag for e in hiscore_list].index('HighScore')
+        except ValueError:
+            print('Failed to find HighScore in hiscorelist '
+                'element for song {}'.format(self.song_title),
+                file=sys.stderr)
+            # we want to skip this song if we couldn't find it,
+            # it probably means I didn't pass it lol
+            return False
+
+        hiscore = hiscore_list[idx]
+        self._hs_init(hiscore)
+        return True
+
+    def _hs_init(self, score):
         self.pct_score = float(score.find('PercentDP').text)*100
-        self.grade = self.convert_to_grade(self.pct_score)
+        self.grade = self.pct_to_grade(self.pct_score)
 
         self.modifiers = score.find('Modifiers').text
 
         # This is Actually !Not! the difficulty level / feet rating
         # This is machine dependent (****, A, D, C, etc.)
-        self.tier = int(score.find('Grade').text[4:])
+        # TODO: ValueError when "Failed" instead of eg "Tier11"
+        # self.tier = int(score.find('Grade').text[4:])
 
         seconds_survived = float(score.find('SurviveSeconds').text)
         self.song_length = '%02d:%02d' % divmod(seconds_survived, 60)
-
-        self.difficulty = root.find('Steps').attrib['Difficulty']
-        # also has StepsType = dance-single usually
 
         self.radar = {i.tag: i.text for i in score.find('RadarValues')}
         self.holdnotes = {i.tag: i.text for i in score.find('HoldNoteScores')}
         self.tapnotes = {i.tag: i.text for i in score.find('TapNoteScores')}
 
-    def convert_to_grade(self, pct_score):
+    def _song_title_init(self, song_node):
+        song_path_str = song_node.attrib['Dir']
+        song_path_str.replace('-R21READY', '') # if it has this substring, please, delete it.
+        song_path_str = song_path_str.split('/')[1:]
+
+        self.song = HighScore.DELIM.join([s for s in song_path_str if s])
+        self.song_title = self.song.split(HighScore.DELIM)[-1]
+
+    def _difficuty_steps_init(self, steps_node):
+        self.difficulty = steps_node.attrib['Difficulty']
+        self.steps_type = steps_node.attrib['StepsType'] # generally dance-single
+
+    def pct_to_grade(self, pct_score):
         """ see: https://gaming.stackexchange.com/questions/233873/what-is-the-grading-system-in-the-groove """
         if pct_score == 0.0:
             return 'F'
@@ -65,13 +115,13 @@ class HighScore(object):
         elif pct_score < 96.0:
             return 'S+'
         elif pct_score < 98.0:
-            return '🟊'
+            return bytes('Star', 'utf-8')
         elif pct_score < 99.0:
-            return '🟊🟊'
+            return bytes('Double Star', 'utf-8')
         elif pct_score < 100.0:
-            return '🟊🟊🟊'
+            return bytes('Tri-Star', 'utf-8')
         elif pct_score == 100.0:
-            return '🟊🟊🟊🟊' # as if! bahaha
+            return bytes('Quad', 'utf-8') # as if! bahaha
         return 'F'
 
     def to_dict(self):

@@ -1,4 +1,4 @@
-import json
+import argparse
 import xml.etree.ElementTree as ET
 
 from itg2.stats_xml import HighScore
@@ -6,19 +6,21 @@ import db.models as models
 from db.models import Song, Chart, Score, mysql_db
 
 
-DATA_FILE = '/users/ke2mcbri/www/app/itg2/data/greenguy/Stats.xml'
-
 if __name__ == '__main__':
-    xml = ET.parse(DATA_FILE)
+    ap = argparse.ArgumentParser()
+    ap.add_argument('stats_file', type=str)
+    arguments = ap.parse_args()
+
+    xml = ET.parse(arguments.stats_file)
     root = xml.getroot()
-    
-    with mysql_db:
 
-        # Song, Chart, Score
-        mysql_db.create_tables([Song, Chart, Score])
-
-    for song_highscore in root[-3].getchildren():
-        hs = HighScore(song_highscore)
+    # -1 for TopScores
+    # -3 for RecentScores ( ??? ) (maybe? i don't remember???)
+    for song in root[-1].getchildren():
+        try:
+            hs = HighScore(song)
+        except KeyError:
+            continue
 
         with mysql_db:
             this_song = Song.create(
@@ -31,6 +33,11 @@ if __name__ == '__main__':
                     song_id=this_song,
                     title=hs.difficulty,
                     num_taps=hs.radar['Taps'],
+                    num_jumps=hs.radar['Jumps'],
+                    num_holds=hs.radar['Holds'],
+                    num_mines=hs.radar['Mines'],
+                    num_rolls=hs.radar['Rolls'],
+                    num_hands=hs.radar['Hands'],
                     )
 
         with mysql_db:

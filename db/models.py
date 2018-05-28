@@ -9,12 +9,14 @@ with open('/users/ke2mcbri/ceo-mysql-info', 'r') as f:
 mysql_db = MySQLDatabase('ke2mcbri', user='ke2mcbri', charset='utf8mb4',
         password=MYSQL_PASSWORD, host='caffeine')
 
+
 class Song(Model):
     # This might seem dumb, but I'd like it to be like, use the stats.xml's surviveLength
     # as the "length" of the track.
     # i wish there was an easier way to get this stuff than by looking at the sm files
     # and oggs... :/
     id = PrimaryKeyField()
+    pack = CharField(max_length=80, null=True)
     title = CharField(max_length=80, )
     subtitle = CharField(max_length=80, null=True)
     bpm = CharField(max_length=80, null=True)
@@ -31,8 +33,12 @@ class Chart(Model):
     level = IntegerField(null=True) # only available from catalog.xml
     title = CharField(max_length=80) # probably "Expert Single"
     num_taps = IntegerField()
-    num_mines = IntegerField(null=True) #jeez...
-    step_artist = CharField(max_length=80, null=True) # can't be found easily w/out real source
+    num_jumps = IntegerField()
+    num_holds = IntegerField()
+    num_mines = IntegerField()
+    num_rolls = IntegerField()
+    num_hands = IntegerField()
+    step_artist = CharField(max_length=80, null=True) # need sm source :|
 
     class Meta:
         database = mysql_db

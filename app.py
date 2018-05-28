@@ -67,6 +67,8 @@ class Website(object):
 
         root = xmls[0].getroot()
         tmpled_songs = []
+        # root[-3] => RecentSongScores
+        # SongScores ([-1])
         for song_highscore in root[-3].getchildren():
             tmpled_songs.append(template_highscore_song(song_highscore))
 
