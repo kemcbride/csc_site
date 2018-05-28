@@ -3,10 +3,6 @@ import sys
 import json
 import pandas as pd
 
-# general TODO:
-# - use get() instead of .attrib[]
-# - use find() instead of iterating over children for a tag
-#    -- what about if find fails? huh?!?!
 
 class HighScore(object):
     """ This is for a single "score" object from a Stats.xml """
@@ -39,10 +35,9 @@ class HighScore(object):
         song_steps = root.getchildren()[0]
         self._difficuty_steps_init(song_steps)
 
-        hiscore_list = song_steps.getchildren()[0].getchildren()
-        try:
-            idx = [e.tag for e in hiscore_list].index('HighScore')
-        except ValueError:
+        hiscore_list = song_steps.getchildren()[0]
+        hiscore = hiscore_list.find('HighScore')
+        if hiscore is None:
             print('Failed to find HighScore in hiscorelist '
                 'element for song {}'.format(self.song_title),
                 file=sys.stderr)
@@ -50,7 +45,6 @@ class HighScore(object):
             # it probably means I didn't pass it lol
             return False
 
-        hiscore = hiscore_list[idx]
         self._hs_init(hiscore)
         return True
 
@@ -73,7 +67,7 @@ class HighScore(object):
         self.tapnotes = {i.tag: i.text for i in score.find('TapNoteScores')}
 
     def _song_title_init(self, song_node):
-        song_path_str = song_node.attrib['Dir']
+        song_path_str = song_node.get('Dir')
         song_path_str.replace('-R21READY', '') # if it has this substring, please, delete it.
         song_path_str = song_path_str.split('/')[1:]
 
@@ -81,8 +75,8 @@ class HighScore(object):
         self.song_title = self.song.split(HighScore.DELIM)[-1]
 
     def _difficuty_steps_init(self, steps_node):
-        self.difficulty = steps_node.attrib['Difficulty']
-        self.steps_type = steps_node.attrib['StepsType'] # generally dance-single
+        self.difficulty = steps_node.get('Difficulty')
+        self.steps_type = steps_node.get('StepsType') # generally dance-single
 
     def pct_to_grade(self, pct_score):
         """ see: https://gaming.stackexchange.com/questions/233873/what-is-the-grading-system-in-the-groove """
