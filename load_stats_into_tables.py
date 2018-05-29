@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 from itg2.stats_xml import HighScore
 import db.models as models
-from db.models import Song, Chart, Score, mysql_db
+from db.models import Song, Chart, Score, MYSQL_DB
 
 
 if __name__ == '__main__':
@@ -22,13 +22,13 @@ if __name__ == '__main__':
         except KeyError:
             continue
 
-        with mysql_db:
+        with MYSQL_DB:
             this_song = Song.create(
                     title=hs.song_title,
                     length=hs.song_length
                     )
 
-        with mysql_db:
+        with MYSQL_DB:
             this_chart = Chart.create(
                     song_id=this_song,
                     title=hs.difficulty,
@@ -40,9 +40,8 @@ if __name__ == '__main__':
                     num_hands=hs.radar['Hands'],
                     )
 
-        with mysql_db:
+        with MYSQL_DB:
             this_score = Score.create(
-                    chart_id=this_chart,
                     grade=hs.grade,
                     percent=hs.pct_score,
                     modifiers=hs.modifiers,
@@ -53,4 +52,15 @@ if __name__ == '__main__':
                     num_decent=hs.tapnotes['Good'],
                     num_wayoff=hs.tapnotes['Boo'],
                     num_miss=hs.tapnotes['Miss'],
+
+                    # foreign key things...
+                    # since composite, peewee won't do it for me.
+                    song_id=this_song,
+                    title=hs.difficulty,
+                    num_taps=hs.radar['Taps'],
+                    num_jumps=hs.radar['Jumps'],
+                    num_holds=hs.radar['Holds'],
+                    num_mines=hs.radar['Mines'],
+                    num_rolls=hs.radar['Rolls'],
+                    num_hands=hs.radar['Hands'],
                     )
