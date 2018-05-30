@@ -5,7 +5,27 @@ import pandas as pd
 
 
 class HighScore(object):
-    """ This is for a single "score" object from a Stats.xml """
+    """ This is for a single "score" object from a Stats.xml
+    Attributes:
+     - song
+       ~ long-form "nicely" delimited song path
+     - song_title
+     - song_length
+     - difficulty
+     - steps_type
+     - datetime
+       ~ usually not accurate, since arcade machines often have wonky time
+     - pct_score
+     - grade
+     - modifiers
+     - radar
+       ~ dict of the num of Holds, Taps, Mines, Rolls, Hands, Jumps for the chart
+     - hold_notes
+       ~ dict of NG/OK for Hold arrows
+     - tap_notes
+       ~ dict of timing scores for the score. (Excellent, Fantastic, etc.)
+       * these actually use DDR terms [ Marvelous, Perfect, Great, Good, Boo, Miss ]
+    """
     DELIM = ' · '
     def __init__(self, root):
         if root.tag == "HighScoreForASongAndSteps": # recent scores
@@ -53,6 +73,8 @@ class HighScore(object):
         self.grade = self.pct_to_grade(self.pct_score)
 
         self.modifiers = score.find('Modifiers').text
+
+        self.datetime = score.find('DateTime').text
 
         # This is Actually !Not! the difficulty level / feet rating
         # This is machine dependent (****, A, D, C, etc.)

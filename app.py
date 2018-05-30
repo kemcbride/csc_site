@@ -19,8 +19,24 @@ CONFIG_DICT = {
 cherrypy.config.update(CONFIG_DICT)
 
 
-def template_highscore_song(xml):
+def template_highscore_from_xml(xml):
     hs = HighScore(xml)
+    with open(TMPL_FMT.format('stats_song'), 'r') as tmpl_file:
+        song_template = Template(tmpl_file.read())
+
+    return song_template.render(
+        song_name=hs.song_title,
+        pct_score=round(hs.pct_score, 2),
+        length=hs.song_length,
+        mods=hs.modifiers,
+        difficulty=hs.difficulty,
+        grade=hs.grade,
+        radar_values=hs.radar,
+        hold_note_scores=hs.holdnotes,
+        tap_note_scores=hs.tapnotes,
+        )
+
+def template_highscore_song(hicore):
     with open(TMPL_FMT.format('stats_song'), 'r') as tmpl_file:
         song_template = Template(tmpl_file.read())
 
@@ -67,10 +83,8 @@ class Website(object):
 
         root = xmls[0].getroot()
         tmpled_songs = []
-        # root[-3] => RecentSongScores
-        # SongScores ([-1])
         for song_highscore in root[-3].getchildren():
-            tmpled_songs.append(template_highscore_song(song_highscore))
+            tmpled_songs.append(template_highscore_from_xml(song_highscore))
 
         content = ''.join(tmpled_songs)
 

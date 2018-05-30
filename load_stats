@@ -1,3 +1,4 @@
+#! /users/ke2mcbri/www/app/bin/python
 import argparse
 import xml.etree.ElementTree as ET
 
@@ -25,7 +26,7 @@ if __name__ == '__main__':
             continue
 
     with MYSQL_DB.atomic():
-        Song.replace_many([
+        Song.insert_many([
             {
                 'title': hs.song_title,
                 'length': hs.song_length
@@ -33,10 +34,11 @@ if __name__ == '__main__':
             for hs in records]).execute()
 
     with MYSQL_DB.atomic():
-        Chart.replace_many([
+        Chart.insert_many([
             {
                 'song_id': hs.song_title,
                 'title': hs.difficulty,
+                'steps_type': hs.steps_type,
                 'num_taps': hs.radar['Taps'],
                 'num_jumps': hs.radar['Jumps'],
                 'num_holds': hs.radar['Holds'],
@@ -47,11 +49,12 @@ if __name__ == '__main__':
             ]).execute()
 
     with MYSQL_DB.atomic():
-        Score.replace_many([
+        Score.insert_many([
             {
                 'grade': hs.grade,
                 'percent': hs.pct_score,
                 'modifiers': hs.modifiers,
+                'datetime': hs.datetime,
                 'num_fantastic': hs.tapnotes['Marvelous'],
                 'num_excellent': hs.tapnotes['Perfect'],
                 'num_great': hs.tapnotes['Great'],
@@ -61,14 +64,9 @@ if __name__ == '__main__':
 
                 # foreign key things...
                 # since composite, peewee won't do it for me.
-                'song_id': hs.song_title,
                 'title': hs.difficulty,
                 'num_taps': hs.radar['Taps'],
-                'num_jumps': hs.radar['Jumps'],
                 'num_holds': hs.radar['Holds'],
-                'num_mines': hs.radar['Mines'],
-                'num_rolls': hs.radar['Rolls'],
-                'num_hands': hs.radar['Hands'],
                 }
             for hs in records
             ]).execute()

@@ -1,0 +1,22 @@
+#! /users/ke2mcbri/www/app/bin/python
+import argparse
+
+from db.models import Song, Chart, Score, MYSQL_DB
+
+
+ACTIONS = ['create', 'drop']
+TABLES = [Song, Chart, Score] # in order of dependency
+
+if __name__ == '__main__':
+    ap = argparse.ArgumentParser()
+    ap.add_argument('action', choices=ACTIONS)
+    args = ap.parse_args()
+
+    if args.action == 'create':
+        with MYSQL_DB.atomic():
+            MYSQL_DB.create_tables(TABLES)
+
+    elif args.action == 'drop':
+        with MYSQL_DB.atomic():
+            # reversed to be careful about dependency
+            MYSQL_DB.drop_tables(TABLES[::-1])
