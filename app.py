@@ -6,7 +6,8 @@ from jinja2 import Template
 import cherrypy
 
 from itg2.stats_xml import HighScore
-from db.models import MYSQL_DB, Song, Chart, Score
+from peewee import MySQLDatabase
+from db.models import MYSQL_PASSWORD, Song, Chart, Score
 
 PORT = 25777 # high but not 28000-28500
 TMPL_FMT = 'templates/{}.html.j2'
@@ -48,7 +49,9 @@ class Website(object):
 
     @cherrypy.expose
     def itg(self):
-        with MYSQL_DB.atomic():
+        db = MySQLDatabase('ke2mcbri', user='ke2mcbri', charset='utf8mb4',
+                password=MYSQL_PASSWORD, host='caffeine')
+        with db.atomic():
             results = Song.select(
                     Song.title, Song.length,
                     Chart.title, Chart.taps, Chart.holds, 
