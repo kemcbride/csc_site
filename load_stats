@@ -39,12 +39,12 @@ if __name__ == '__main__':
 
                 title=hs.difficulty,
                 steps_type=hs.steps_type,
-                num_taps=hs.radar['Taps'],
-                num_jumps=hs.radar['Jumps'],
-                num_holds=hs.radar['Holds'],
-                num_mines=hs.radar['Mines'],
-                num_rolls=hs.radar['Rolls'],
-                num_hands=hs.radar['Hands'],
+                taps=hs.radar['Taps'],
+                jumps=hs.radar['Jumps'],
+                holds=hs.radar['Holds'],
+                mines=hs.radar['Mines'],
+                rolls=hs.radar['Rolls'],
+                hands=hs.radar['Hands'],
                     )
             this_chart.save()
 
@@ -55,11 +55,13 @@ if __name__ == '__main__':
                     percent=hs.pct_score,
                     modifiers=hs.modifiers,
                     datetime=hs.datetime,
-                    num_fantastic=hs.tapnotes['Marvelous'],
-                    num_excellent=hs.tapnotes['Perfect'],
-                    num_great=hs.tapnotes['Great'],
-                    num_decent=hs.tapnotes['Good'],
-                    num_wayoff=hs.tapnotes['Boo'],
-                    num_miss=hs.tapnotes['Miss'],
+                    fantastic=hs.tapnotes['Marvelous'],
+                    excellent=hs.tapnotes['Perfect'],
+                    great=hs.tapnotes['Great'],
+                    decent=hs.tapnotes['Good'],
+                    wayoff=hs.tapnotes['Boo'],
+                    miss=hs.tapnotes['Miss'],
+                    ng=hs.holdnotes['NG'],
+                    ok=hs.holdnotes['OK'],
                     )
             this_score.save()

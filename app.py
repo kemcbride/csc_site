@@ -51,13 +51,13 @@ class Website(object):
         with MYSQL_DB.atomic():
             results = Song.select(
                     Song.title, Song.length,
-                    Chart.title, Chart.num_taps, Chart.num_holds, 
-                    Chart.num_jumps, Chart.num_mines, Chart.num_rolls,
-                    Chart.num_hands,
+                    Chart.title, Chart.taps, Chart.holds, 
+                    Chart.jumps, Chart.mines, Chart.rolls,
+                    Chart.hands,
                     Score.grade, Score.percent, Score.modifiers,
-                    Score.num_fantastic, Score.num_excellent,
-                    Score.num_great, Score.num_decent, Score.num_wayoff,
-                    Score.num_miss,
+                    Score.fantastic, Score.excellent,
+                    Score.great, Score.decent, Score.wayoff,
+                    Score.miss, Score.ng, Score.ok,
                     ).join(Chart).join(Score).where(Score.percent >= 96.0
                             ).order_by(Score.percent.desc()).limit(10)
 
@@ -70,59 +70,6 @@ class Website(object):
         with open(TMPL_FMT.format('basic'), 'r') as tmpl_file:
             basic_template = Template(tmpl_file.read())
         return basic_template.render(content=content)
-
-    @cherrypy.expose
-    def itg_nice(self):
-        data = [
-            './itg2/data/{}/Stats.xml'.format(f)
-            for f in os.listdir('itg2/data')
-            if os.path.exists('./itg2/data/{}/Stats.xml'.format(f))
-            ]
-        xml = ET.parse(data[0])
-        del data
-        root = xml.getroot()
-        hss = [HighScore(c) for c in root[-3].getchildren()]
-        json_hss = '{ "highscores": [' + ','.join(hs.to_json() for hs in hss) + ']}'
-
-        # Check it out: This is what I'll do:
-        # - create indexed template spots that can use the JSON data (js)
-        # - load the data on the page root template, and have the js access
-        #     each element in [the list] based on the template index! easy!
-
-        with open(TMPL_FMT.format('js_highscore'), 'r') as jstmpl_file:
-            js_template = Template(jstmpl_file.read())
-            print(js_template)
-
-        # dogs = '<br>'.join([
-        #     js_template.render(idx=i, song_name=hs.difficulty)
-        #     for i, hs in enumerate(hss)
-        #     ])
-        dogs = js_template.render(idx=0, song_name='dog')
-
-        with open(TMPL_FMT.format('itg_scores'), 'r') as tmpl_file:
-            basic_template = Template(tmpl_file.read())
-            print(js_template)
-        return basic_template.render(scores_json=json_hss, content=dogs)
-
-    @cherrypy.expose
-    @cherrypy.tools.json_out()
-    def itg_json(self):
-        fpaths = [
-            './itg2/data/{}/Stats.xml'.format(f)
-            for f in os.listdir('itg2/data')
-            if os.path.exists('./itg2/data/{}/Stats.xml'.format(f))
-            ]
-        xmls = [ET.parse(datum) for datum in fpaths]
-        response_out = {}
-        for idx, fpath in enumerate(fpaths):
-            fname = fpath.split('/')[2]
-            response_out[fname] = []
-
-            for recent_highscore_raw in xmls[idx].getroot()[-3].getchildren():
-                hs = HighScore(recent_highscore_raw)
-                response_out[fname].append(hs.to_dict())
-        return response_out
-
 
 
 cherrypy.quickstart(Website())

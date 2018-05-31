@@ -131,57 +131,11 @@ class HighScore(object):
         elif pct_score < 96.0:
             return 'S+'
         elif pct_score < 98.0:
-            return bytes('Star', 'utf-8')
+            return bytes('*', 'utf-8')
         elif pct_score < 99.0:
-            return bytes('Double Star', 'utf-8')
+            return bytes('**', 'utf-8')
         elif pct_score < 100.0:
-            return bytes('Tri-Star', 'utf-8')
+            return bytes('***', 'utf-8')
         elif pct_score == 100.0:
-            return bytes('Quad', 'utf-8') # as if! bahaha
+            return bytes('****', 'utf-8') # as if! bahaha
         return 'F'
-
-    def to_dict(self):
-        """ yes... """
-        return self.__dict__
-
-    def to_json(self):
-        """This only works if all of self's properties are JSON serializable
-        ie. they have to be like basic types - string, int, double, whatever.
-        I tried to have it keept the root xml guy for example - that failed.
-        """
-        return json.dumps(self.to_dict())
-
-    def to_csv(self):
-        """ umm... this is like.. the idea... is that ...
-        i can put this into a database and then that'd be really cool
-        """
-
-        # something like this: except wait! I wnat like, a whole bunch of scores,
-        #... presumably
-        return pd.Dataframe(self.to_dict()).to_csv()
-
-
-class Stats(object):
-    """ OK, so this is for like "a set of scores" or whatever i get from a Stats.xml"""
-    def __init__(self, xml):
-        # this looks at RecentScoresForASong or something...
-        data = []
-        for recent_highscore_raw in xml.getroot()[-3].getchildren():
-            hs = HighScore(recent_highscore_raw)
-            data.append(hs)
-        self.scores = data
-
-
-class AllStats(object):
-    def __init__(self, paths_format='./itg2/data/{}/Stats.xml'):
-        fpaths = [
-            paths_format.format(f)
-            for f in os.listdir('itg2/data') # maybe this should change lol
-            if os.path.exists(paths_format.format(f))
-            ]
-        xmls = [ET.parse(datum) for datum in fpaths]
-        response_out = {}
-        for idx, fpath in enumerate(fpaths):
-            fname = fpath.split('/')[2]
-            response_out[fname] = Stats(xmls[idx])
-        self.data = response_out

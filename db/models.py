@@ -45,18 +45,18 @@ class Chart(Model):
     steps_type = CharField(max_length=20) # i pretty much never play doubles...
     step_artist = CharField(max_length=80, null=True) # need sm source :|
 
-    num_taps = IntegerField()
-    num_jumps = IntegerField()
-    num_holds = IntegerField()
-    num_mines = IntegerField()
-    num_rolls = IntegerField()
-    num_hands = IntegerField()
+    taps = IntegerField()
+    jumps = IntegerField()
+    holds = IntegerField()
+    mines = IntegerField()
+    rolls = IntegerField()
+    hands = IntegerField()
 
     class Meta:
         database = MYSQL_DB
         indexes = (
-                (('title', 'pack', 'steps_type', 'num_taps', 'num_jumps',
-                    'num_holds', 'num_mines', 'num_rolls', 'num_hands',
+                (('title', 'pack', 'steps_type', 'taps', 'jumps',
+                    'holds', 'mines', 'rolls', 'hands',
                     ), True),
                 )
 
@@ -72,17 +72,20 @@ class Score(Model):
     datetime = TextField(null=True)
     modifiers = CharField(max_length=120)
 
-    num_ecfa_fantastic = IntegerField(null=True)
-    num_fantastic = IntegerField()
-    num_excellent = IntegerField()
-    num_great = IntegerField()
-    num_decent = IntegerField(null=True)
-    num_wayoff = IntegerField(null=True)
-    num_miss = IntegerField()
+    ecfa_fantastic = IntegerField(null=True)
+    fantastic = IntegerField()
+    excellent = IntegerField()
+    great = IntegerField()
+    decent = IntegerField(null=True)
+    wayoff = IntegerField(null=True)
+    miss = IntegerField()
+
+    ng = IntegerField()
+    ok = IntegerField()
 
     class Meta:
         database = MYSQL_DB
         indexes = (
-                (('percent', 'num_fantastic', 'num_excellent', 'num_great', 'num_miss'),
+                (('percent', 'fantastic', 'excellent', 'great', 'miss'),
                     True),
                 )

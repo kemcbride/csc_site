@@ -10,39 +10,41 @@
 <div class="radar col-md-4">
 <table>
 	<tr>
-	<td class='itg_block'>Taps:</td> <td class='itg_block'>{{ r.chart.num_taps }}</td>
+	<td class='itg_block'>Taps:</td> <td class='itg_block'>{{ r.chart.taps }}</td>
 	</tr>
 	<tr>
-	<td class='itg_block'>Holds:</td> <td class='itg_block'>{{ r.chart.num_holds }}</td>
+	<td class='itg_block'>Holds:</td> <td class='itg_block'>{{ r.chart.holds }}</td>
 	</tr>
 	<tr>
-	<td class='itg_block'>Jumps:</td> <td class='itg_block'>{{ r.chart.num_jumps }}</td>
+	<td class='itg_block'>Jumps:</td> <td class='itg_block'>{{ r.chart.jumps }}</td>
 	</tr>
 	<tr>
-	<td class='itg_block'>Hands:</td> <td class='itg_block'>{{ r.chart.num_hands }}</td>
+	<td class='itg_block'>Hands:</td> <td class='itg_block'>{{ r.chart.hands }}</td>
 	</tr>
 	<tr>
-	<td class='itg_block'>Rolls:</td> <td class='itg_block'>{{ r.chart.num_rolls }}</td>
+	<td class='itg_block'>Rolls:</td> <td class='itg_block'>{{ r.chart.rolls }}</td>
 	</tr>
 	<tr>
-	<td class='itg_block'>mines:</td> <td class='itg_block'>{{ r.chart.num_mines }}</td>
+	<td class='itg_block'>mines:</td> <td class='itg_block'>{{ r.chart.mines }}</td>
 	</tr>
 </table>
 </div>
 
 <div class="hold_notes itg_block col-md-4">
 <ul>
+	<li>NG: {{r.chart.score.ng}} </li>
+	<li>OK: {{r.chart.score.ok}} </li>
 </ul>
 </div>
 
 <div class="tap_notes itg_block col-md-4">
 <ul>
-	<li><span class='fantastic'>{{ r.chart.score.num_fantastic }}</span></li>
-	<li><span class='excellent'>{{ r.chart.score.num_excellent }}</span></li>
-	<li><span class='great'>{{ r.chart.score.num_great }}</span></li>
-	<li><span class='decent'>{{ r.chart.score.num_decent }}</span></li>
-	<li><span class='wayoff'>{{ r.chart.score.num_wayoff }}</span></li>
-	<li><span class='miss'>{{ r.chart.score.num_miss }}</span></li>
+	<li><span class='fantastic'>{{ r.chart.score.fantastic }}</span></li>
+	<li><span class='excellent'>{{ r.chart.score.excellent }}</span></li>
+	<li><span class='great'>{{ r.chart.score.great }}</span></li>
+	<li><span class='decent'>{{ r.chart.score.decent }}</span></li>
+	<li><span class='wayoff'>{{ r.chart.score.wayoff }}</span></li>
+	<li><span class='miss'>{{ r.chart.score.miss }}</span></li>
 </ul>
 </div>
 
