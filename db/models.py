@@ -7,9 +7,7 @@ with open('/users/ke2mcbri/ceo-mysql-info', 'r') as f:
             break
 
 CHART_KEY_MEMBERS = [
-        'song_id', 'title',
-        'num_taps', 'num_jumps', 'num_rolls',
-        'num_hands', 'num_holds', 'num_mines',
+        'title', 'num_taps', 'num_holds',
         ]
 
 
@@ -22,45 +20,58 @@ class Song(Model):
     # as the "length" of the track. (can only do for passes)
     # i wish there was an easier way to get this stuff than by looking at the sm files
     # and oggs... :/
-    title = CharField(max_length=80, primary_key=True)
-    pack = CharField(max_length=80, null=True)
+    id = AutoField()
+
+    title = CharField(max_length=80)
     subtitle = CharField(max_length=80, null=True)
     bpm = CharField(max_length=80, null=True)
     length = CharField(max_length=80, )
-    artist = CharField(max_length=80, null=True) # really cutting it down here, huh...
+    artist = CharField(max_length=80, null=True)
 
     class Meta:
         database = MYSQL_DB
+        indexes = (
+                (('title', 'subtitle', 'length'), True),
+                )
+
 
 class Chart(Model):
-    song_id = ForeignKeyField(Song, backref='chart_song')
+    id = AutoField()
+
+    song_id = ForeignKeyField(Song)
+    pack = CharField(max_length=80, null=True)
     level = IntegerField(null=True) # only available from catalog.xml
     title = CharField(max_length=80) # probably "Expert Single"
+    steps_type = CharField(max_length=20) # i pretty much never play doubles...
+    step_artist = CharField(max_length=80, null=True) # need sm source :|
+
     num_taps = IntegerField()
     num_jumps = IntegerField()
     num_holds = IntegerField()
     num_mines = IntegerField()
     num_rolls = IntegerField()
     num_hands = IntegerField()
-    step_artist = CharField(max_length=80, null=True) # need sm source :|
 
     class Meta:
         database = MYSQL_DB
-        primary_key = CompositeKey(*CHART_KEY_MEMBERS)
+        indexes = (
+                (('title', 'pack', 'steps_type', 'num_taps', 'num_jumps',
+                    'num_holds', 'num_mines', 'num_rolls', 'num_hands',
+                    ), True),
+                )
 
 
-# player_tag = CharField(max_length=4, null=True)
-QUOTE_FMTED_CHART_KEY_MEMBERS = ', '.join(f'`{c}`' for c in CHART_KEY_MEMBERS)
-SCORE_FK_CONSTRAINT = (
-    'CONSTRAINT fk_score_chart_song FOREIGN KEY '
-    f'({QUOTE_FMTED_CHART_KEY_MEMBERS})'
-    ' REFERENCES '
-    f'chart({QUOTE_FMTED_CHART_KEY_MEMBERS})'
-    )
 class Score(Model):
+    id = AutoField()
+
+    chart_id = ForeignKeyField(Chart)
     grade = CharField(max_length=20)
     percent = FloatField()
+
+    player_tag = CharField(max_length=4, null=True)
+    datetime = TextField(null=True)
     modifiers = CharField(max_length=120)
+
     num_ecfa_fantastic = IntegerField(null=True)
     num_fantastic = IntegerField()
     num_excellent = IntegerField()
@@ -69,20 +80,9 @@ class Score(Model):
     num_wayoff = IntegerField(null=True)
     num_miss = IntegerField()
 
-    song_id = CharField(max_length=80)
-    title = CharField(max_length=80)
-    num_taps = IntegerField()
-    num_jumps = IntegerField()
-    num_holds = IntegerField()
-    num_mines = IntegerField()
-    num_rolls = IntegerField()
-    num_hands = IntegerField()
-
     class Meta:
         database = MYSQL_DB
-        primary_key = CompositeKey('percent',
-                'num_fantastic', 'num_excellent',
-                'num_great', 'num_miss')
-        constraints = [
-                SQL(SCORE_FK_CONSTRAINT),
-            ]
+        indexes = (
+                (('percent', 'num_fantastic', 'num_excellent', 'num_great', 'num_miss'),
+                    True),
+                )

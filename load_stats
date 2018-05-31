@@ -25,48 +25,41 @@ if __name__ == '__main__':
         except KeyError:
             continue
 
-    with MYSQL_DB.atomic():
-        Song.insert_many([
-            {
-                'title': hs.song_title,
-                'length': hs.song_length
-                }
-            for hs in records]).execute()
+    for hs in records:
 
-    with MYSQL_DB.atomic():
-        Chart.insert_many([
-            {
-                'song_id': hs.song_title,
-                'title': hs.difficulty,
-                'steps_type': hs.steps_type,
-                'num_taps': hs.radar['Taps'],
-                'num_jumps': hs.radar['Jumps'],
-                'num_holds': hs.radar['Holds'],
-                'num_mines': hs.radar['Mines'],
-                'num_rolls': hs.radar['Rolls'],
-                'num_hands': hs.radar['Hands'],
-            } for hs in records
-            ]).execute()
+        with MYSQL_DB.atomic():
+            this_song = Song(
+                    title=hs.song_title,
+                    length=hs.song_length,
+                )
+            this_song.save()
 
-    with MYSQL_DB.atomic():
-        Score.insert_many([
-            {
-                'grade': hs.grade,
-                'percent': hs.pct_score,
-                'modifiers': hs.modifiers,
-                'datetime': hs.datetime,
-                'num_fantastic': hs.tapnotes['Marvelous'],
-                'num_excellent': hs.tapnotes['Perfect'],
-                'num_great': hs.tapnotes['Great'],
-                'num_decent': hs.tapnotes['Good'],
-                'num_wayoff': hs.tapnotes['Boo'],
-                'num_miss': hs.tapnotes['Miss'],
+            this_chart = Chart(
+                song_id=this_song.id,
 
-                # foreign key things...
-                # since composite, peewee won't do it for me.
-                'title': hs.difficulty,
-                'num_taps': hs.radar['Taps'],
-                'num_holds': hs.radar['Holds'],
-                }
-            for hs in records
-            ]).execute()
+                title=hs.difficulty,
+                steps_type=hs.steps_type,
+                num_taps=hs.radar['Taps'],
+                num_jumps=hs.radar['Jumps'],
+                num_holds=hs.radar['Holds'],
+                num_mines=hs.radar['Mines'],
+                num_rolls=hs.radar['Rolls'],
+                num_hands=hs.radar['Hands'],
+                    )
+            this_chart.save()
+
+            this_score = Score(
+                    chart_id = this_chart.id,
+
+                    grade=hs.grade,
+                    percent=hs.pct_score,
+                    modifiers=hs.modifiers,
+                    datetime=hs.datetime,
+                    num_fantastic=hs.tapnotes['Marvelous'],
+                    num_excellent=hs.tapnotes['Perfect'],
+                    num_great=hs.tapnotes['Great'],
+                    num_decent=hs.tapnotes['Good'],
+                    num_wayoff=hs.tapnotes['Boo'],
+                    num_miss=hs.tapnotes['Miss'],
+                    )
+            this_score.save()

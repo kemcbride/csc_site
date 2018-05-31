@@ -6,6 +6,7 @@ from jinja2 import Template
 import cherrypy
 
 from itg2.stats_xml import HighScore
+from db.models import MYSQL_DB, Song, Chart, Score
 
 PORT = 25777 # high but not 28000-28500
 TMPL_FMT = 'templates/{}.html.j2'
@@ -19,38 +20,11 @@ CONFIG_DICT = {
 cherrypy.config.update(CONFIG_DICT)
 
 
-def template_highscore_from_xml(xml):
-    hs = HighScore(xml)
+def template_highscore(record):
     with open(TMPL_FMT.format('stats_song'), 'r') as tmpl_file:
         song_template = Template(tmpl_file.read())
+    return song_template.render(r=record)
 
-    return song_template.render(
-        song_name=hs.song_title,
-        pct_score=round(hs.pct_score, 2),
-        length=hs.song_length,
-        mods=hs.modifiers,
-        difficulty=hs.difficulty,
-        grade=hs.grade,
-        radar_values=hs.radar,
-        hold_note_scores=hs.holdnotes,
-        tap_note_scores=hs.tapnotes,
-        )
-
-def template_highscore_song(hicore):
-    with open(TMPL_FMT.format('stats_song'), 'r') as tmpl_file:
-        song_template = Template(tmpl_file.read())
-
-    return song_template.render(
-        song_name=hs.song_title,
-        pct_score=round(hs.pct_score, 2),
-        length=hs.song_length,
-        mods=hs.modifiers,
-        difficulty=hs.difficulty,
-        grade=hs.grade,
-        radar_values=hs.radar,
-        hold_note_scores=hs.holdnotes,
-        tap_note_scores=hs.tapnotes,
-        )
 
 class Website(object):
     @cherrypy.expose
@@ -74,17 +48,22 @@ class Website(object):
 
     @cherrypy.expose
     def itg(self):
-        data = [
-            './itg2/data/{}/Stats.xml'.format(f)
-            for f in os.listdir('itg2/data')
-            if os.path.exists('./itg2/data/{}/Stats.xml'.format(f))
-            ]
-        xmls = [ET.parse(datum) for datum in data]
+        with MYSQL_DB.atomic():
+            results = Song.select(
+                    Song.title, Song.length,
+                    Chart.title, Chart.num_taps, Chart.num_holds, 
+                    Chart.num_jumps, Chart.num_mines, Chart.num_rolls,
+                    Chart.num_hands,
+                    Score.grade, Score.percent, Score.modifiers,
+                    Score.num_fantastic, Score.num_excellent,
+                    Score.num_great, Score.num_decent, Score.num_wayoff,
+                    Score.num_miss,
+                    ).join(Chart).join(Score).where(Score.percent >= 96.0
+                            ).order_by(Score.percent.desc()).limit(10)
 
-        root = xmls[0].getroot()
         tmpled_songs = []
-        for song_highscore in root[-3].getchildren():
-            tmpled_songs.append(template_highscore_from_xml(song_highscore))
+        for record in results:
+            tmpled_songs.append(template_highscore(record))
 
         content = ''.join(tmpled_songs)
 
