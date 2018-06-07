@@ -1,7 +1,16 @@
-import os
 import sys
-import json
-import pandas as pd
+
+import xml.etree.ElementTree as ET
+
+
+TIMING_TERMS = {
+        'Marvelous': 'Fantastic',
+        'Perfect':   'Excellent',
+        'Great':     'Great',
+        'Good':      'Decent',
+        'Boo':       'Wayoff',
+        'Miss':      'Miss',
+        }
 
 
 class HighScore(object):
@@ -25,9 +34,19 @@ class HighScore(object):
      - tap_notes
        ~ dict of timing scores for the score. (Excellent, Fantastic, etc.)
        * these actually use DDR terms [ Marvelous, Perfect, Great, Good, Boo, Miss ]
+
+    The following attributes are added if you 'update_from_catalog':
+     - level
+     - main_title
+       ~ what the machine shows as the title
+     - sub_title
+       ~ what the machine shows as the subtitle
     """
     DELIM = ' · '
     def __init__(self, root):
+        self.level = -1
+        self.maintitle = ''
+        self.subtitle = ''
         if root.tag == "HighScoreForASongAndSteps": # recent scores
             self._hs4song_n_steps_init(root)
 
@@ -70,7 +89,6 @@ class HighScore(object):
 
     def _hs_init(self, score):
         self.pct_score = float(score.find('PercentDP').text)*100
-        self.grade = self.pct_to_grade(self.pct_score)
 
         self.modifiers = score.find('Modifiers').text
 
@@ -78,8 +96,8 @@ class HighScore(object):
 
         # This is Actually !Not! the difficulty level / feet rating
         # This is machine dependent (****, A, D, C, etc.)
-        # TODO: ValueError when "Failed" instead of eg "Tier11"
-        # self.tier = int(score.find('Grade').text[4:])
+        self.passed = not score.find('Grade').text.startswith('Fail')
+        self.grade = self.pct_to_grade(self.pct_score)
 
         seconds_survived = float(score.find('SurviveSeconds').text)
         self.song_length = '%02d:%02d' % divmod(seconds_survived, 60)
@@ -89,9 +107,11 @@ class HighScore(object):
         self.tapnotes = {i.tag: i.text for i in score.find('TapNoteScores')}
 
     def _song_title_init(self, song_node):
+        self.dir = song_node.get('Dir')
         song_path_str = song_node.get('Dir')
         song_path_str.replace('-R21READY', '') # if it has this substring, please, delete it.
         song_path_str = song_path_str.split('/')[1:]
+        self.cat_dir = '/'.join(song_path_str[1:])
 
         self.song = HighScore.DELIM.join([s for s in song_path_str if s])
         self.song_title = self.song.split(HighScore.DELIM)[-1]
@@ -102,7 +122,7 @@ class HighScore(object):
 
     def pct_to_grade(self, pct_score):
         """ see: https://gaming.stackexchange.com/questions/233873/what-is-the-grading-system-in-the-groove """
-        if pct_score == 0.0:
+        if pct_score == 0.0 or not self.passed:
             return 'F'
         if pct_score < 55.0:
             return 'D'
@@ -131,11 +151,102 @@ class HighScore(object):
         elif pct_score < 96.0:
             return 'S+'
         elif pct_score < 98.0:
-            return bytes('*', 'utf-8')
+            return '*'
         elif pct_score < 99.0:
-            return bytes('**', 'utf-8')
+            return '**'
         elif pct_score < 100.0:
-            return bytes('***', 'utf-8')
+            return '***'
         elif pct_score == 100.0:
-            return bytes('****', 'utf-8') # as if! bahaha
+            return '****'
         return 'F'
+
+    # ! NOTE! see catalog classes comments/
+    # this function is useless. not ready to kill it yet though :(
+    def update_from_catalog(self, catalog):
+        try:
+            song = catalog.songs[self.cat_dir]
+            print (song)
+            steps = catsong[self.steps_type][self.difficulty]
+
+            self.level = steps.level
+            self.maintitle = song.maintitle
+            self.subtitle = song.subtitle
+        except KeyError:
+            print('{} not found in catalog.'.format(self.song_title),
+                    file=sys.stderr)
+            print('{}: {}'.format(self.cat_dir, self.cat_dir in catalog.songs.keys()),
+                    file=sys.stderr)
+
+
+class TopScores(object):
+    def __init__(self, stats_file):
+        self.stats_xml = stats_file
+
+        xml = ET.parse(stats_file)
+        root = xml.getroot()
+        records = []
+        for song in root.find('SongScores').getchildren():
+            try:
+                hs = HighScore(song)
+                records.append(hs)
+            except KeyError:
+                continue
+        self.scores = records
+
+
+class RecentScores(object):
+    def __init__(self, stats_file):
+        self.stats_xml = stats_file
+
+        xml = ET.parse(stats_file)
+        root = xml.getroot()
+        records = []
+        for song in root.find('RecentSongScores').getchildren():
+            try:
+                hs = HighScore(song)
+                records.append(hs)
+            except KeyError:
+                continue
+        self.scores = records
+
+
+###
+# !NOTE: seems like the catalog is useles unless we already know what pack
+#     a given song is from. oh well...
+# like, at that point, might as well just use the raw sm source data.
+###
+
+class CatalogSteps(object):
+    def __init__(self, steps):
+        self.difficulty = steps.get('Difficulty')
+        self.steps_type = steps.get('StepsType')
+        self.level = int(steps.find('Meter').text)
+        self.radar = {i.tag: i.text for i in steps.find('RadarValues')}
+
+
+class CatalogSong(object):
+    def __init__(self, song):
+        self.dir = song.get('Dir')
+
+        self.maintitle = song.find('MainTitle').text
+        self.subtitle = song.find('SubTitle').text
+        self.steps = {
+                'dance-single': {},
+                'dance-double': {},
+                }
+        for steps in song.findall('Steps'):
+            steps = song.find('Steps')
+            difficulty = steps.get('Difficulty')
+            steps_type = steps.get('StepsType')
+            self.steps[steps_type][difficulty] = CatalogSteps(steps)
+
+
+class Catalog(object):
+    def __init__(self, catalog_file):
+        self.catalog_xml = catalog_file
+
+        xml = ET.parse(catalog_file)
+        root = xml.getroot()
+        self.songs = {}
+        for song in root.find('Songs').getchildren():
+            self.songs[song.get('Dir')] = CatalogSong(song)

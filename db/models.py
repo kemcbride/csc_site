@@ -23,6 +23,7 @@ class Song(Model):
     id = AutoField()
 
     title = CharField(max_length=80)
+    maintitle = CharField(max_length=80, null=True)
     subtitle = CharField(max_length=80, null=True)
     bpm = CharField(max_length=80, null=True)
     length = CharField(max_length=80, )
@@ -40,9 +41,9 @@ class Chart(Model):
 
     song_id = ForeignKeyField(Song)
     pack = CharField(max_length=80, null=True)
-    level = IntegerField(null=True) # only available from catalog.xml
-    title = CharField(max_length=80) # probably "Expert Single"
-    steps_type = CharField(max_length=20) # i pretty much never play doubles...
+    level = IntegerField(null=True)
+    title = CharField(max_length=80)
+    steps_type = CharField(max_length=20)
     step_artist = CharField(max_length=80, null=True) # need sm source :|
 
     taps = IntegerField()
@@ -86,6 +87,6 @@ class Score(Model):
     class Meta:
         database = MYSQL_DB
         indexes = (
-                (('percent', 'fantastic', 'excellent', 'great', 'miss'),
+                (('chart_id', 'percent', 'fantastic', 'excellent', 'great', 'miss'),
                     True),
                 )

@@ -1,6 +1,5 @@
 import os
 import json
-import xml.etree.ElementTree as ET
 
 from jinja2 import Template
 import cherrypy

@@ -1,67 +1,84 @@
 #! /users/ke2mcbri/www/app/bin/python
 import argparse
-import xml.etree.ElementTree as ET
 
-from itg2.stats_xml import HighScore
+from itg2.stats_xml import TopScores
 import db.models as models
 from db.models import Song, Chart, Score, MYSQL_DB
 
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('stats_file', type=str)
-    arguments = ap.parse_args()
+    ap.add_argument('datadir', type=str)
+    args = ap.parse_args()
+    stats_path = '/'.join([args.datadir, 'Stats.xml'])
 
-    xml = ET.parse(arguments.stats_file)
-    root = xml.getroot()
-
-    # -1 for TopScores
-    # -3 for RecentScores ( ??? ) (maybe? i don't remember???)
-    records = []
-    for song in root[-1].getchildren():
-        try:
-            hs = HighScore(song)
-            records.append(hs)
-        except KeyError:
-            continue
-
-    for hs in records:
+    top_scores = TopScores(stats_path)
+    for hs in top_scores.scores:
 
         with MYSQL_DB.atomic():
-            this_song = Song(
+            this_song, song_created = Song.get_or_create(
                     title=hs.song_title,
                     length=hs.song_length,
+                    defaults={
+                        'title': hs.song_title,
+                        'length': hs.song_length,
+                        }
                 )
-            this_song.save()
 
-            this_chart = Chart(
-                song_id=this_song.id,
+            this_chart, chart_created = Chart.get_or_create(
+                    song_id=this_song.id,
 
-                title=hs.difficulty,
-                steps_type=hs.steps_type,
-                taps=hs.radar['Taps'],
-                jumps=hs.radar['Jumps'],
-                holds=hs.radar['Holds'],
-                mines=hs.radar['Mines'],
-                rolls=hs.radar['Rolls'],
-                hands=hs.radar['Hands'],
+                    title=hs.difficulty,
+                    steps_type=hs.steps_type,
+                    taps=hs.radar['Taps'],
+                    jumps=hs.radar['Jumps'],
+                    holds=hs.radar['Holds'],
+                    mines=hs.radar['Mines'],
+                    rolls=hs.radar['Rolls'],
+                    hands=hs.radar['Hands'],
+                    defaults = {
+                        'song_id': this_song.id,
+                        'title': hs.difficulty,
+                        'steps_type': hs.steps_type,
+                        'taps': hs.radar['Taps'],
+                        'jumps': hs.radar['Jumps'],
+                        'holds': hs.radar['Holds'],
+                        'mines': hs.radar['Mines'],
+                        'rolls': hs.radar['Rolls'],
+                        'hands': hs.radar['Hands'],
+                        }
                     )
-            this_chart.save()
 
-            this_score = Score(
+            this_score, score_created = Score.get_or_create(
                     chart_id = this_chart.id,
 
                     grade=hs.grade,
                     percent=hs.pct_score,
                     modifiers=hs.modifiers,
                     datetime=hs.datetime,
+
                     fantastic=hs.tapnotes['Marvelous'],
                     excellent=hs.tapnotes['Perfect'],
                     great=hs.tapnotes['Great'],
                     decent=hs.tapnotes['Good'],
                     wayoff=hs.tapnotes['Boo'],
                     miss=hs.tapnotes['Miss'],
+
                     ng=hs.holdnotes['NG'],
                     ok=hs.holdnotes['OK'],
+                    defaults = {
+                        'chart_id': this_chart.id,
+                        'grade': hs.grade,
+                        'percent': hs.pct_score,
+                        'modifiers': hs.modifiers,
+                        'datetime': hs.datetime,
+                        'fantastic': hs.tapnotes['Marvelous'],
+                        'excellent': hs.tapnotes['Perfect'],
+                        'great': hs.tapnotes['Great'],
+                        'decent': hs.tapnotes['Good'],
+                        'wayoff': hs.tapnotes['Boo'],
+                        'miss': hs.tapnotes['Miss'],
+                        'ng': hs.holdnotes['NG'],
+                        'ok': hs.holdnotes['OK'],
+                        }
                     )
-            this_score.save()

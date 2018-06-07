@@ -21,6 +21,7 @@ Pygments==2.2.0
 PyMySQL==0.8.1
 python-dateutil==2.6.1
 pytz==2017.3
+git+git://github.com/garcia/simfile@py3#egg=simfile
 simplegeneric==0.8.1
 six==1.11.0
 tempora==1.10
