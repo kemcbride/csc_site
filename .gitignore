@@ -8,9 +8,8 @@ pip-selfcheck.json
 assets/images
 assets/fonts
 assets/css/bootstrap.min.css
-itg2/greenguy
-itg2/peranis
-itg2/old_desktop_itgdata
+itg2/data
+itg2/packs
 **.pyc
 **.swp
 **.swo
