@@ -11,8 +11,10 @@ CHART_KEY_MEMBERS = [
         ]
 
 
-MYSQL_DB = MySQLDatabase('ke2mcbri', user='ke2mcbri', charset='utf8mb4',
-        password=MYSQL_PASSWORD, host='caffeine')
+def connect_to_db():
+    mysql_db = MySQLDatabase('ke2mcbri', user='ke2mcbri', charset='utf8mb4',
+            password=MYSQL_PASSWORD, host='caffeine')
+    return mysql_db
 
 
 class Song(Model):
@@ -30,7 +32,7 @@ class Song(Model):
     artist = CharField(max_length=80, null=True)
 
     class Meta:
-        database = MYSQL_DB
+        database = connect_to_db()
         indexes = (
                 (('title', 'subtitle', 'length'), True),
                 )
@@ -54,7 +56,7 @@ class Chart(Model):
     hands = IntegerField()
 
     class Meta:
-        database = MYSQL_DB
+        database = connect_to_db()
         indexes = (
                 (('title', 'pack', 'steps_type', 'taps', 'jumps',
                     'holds', 'mines', 'rolls', 'hands',
@@ -85,7 +87,7 @@ class Score(Model):
     ok = IntegerField()
 
     class Meta:
-        database = MYSQL_DB
+        database = connect_to_db()
         indexes = (
                 (('chart_id', 'percent', 'fantastic', 'excellent', 'great', 'miss'),
                     True),

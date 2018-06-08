@@ -1,7 +1,7 @@
 #! /users/ke2mcbri/www/app/bin/python
 import argparse
 
-from db.models import Song, Chart, Score, MYSQL_DB
+from db.models import Song, Chart, Score, connect_to_db
 
 
 ACTIONS = ['create', 'drop']
@@ -12,11 +12,12 @@ if __name__ == '__main__':
     ap.add_argument('action', choices=ACTIONS)
     args = ap.parse_args()
 
+    db = connect_to_db()
     if args.action == 'create':
-        with MYSQL_DB.atomic():
-            MYSQL_DB.create_tables(TABLES)
+        with db.atomic():
+            db.create_tables(TABLES)
 
     elif args.action == 'drop':
-        with MYSQL_DB.atomic():
+        with db.atomic():
             # reversed to be careful about dependency
-            MYSQL_DB.drop_tables(TABLES[::-1])
+            db.drop_tables(TABLES[::-1])

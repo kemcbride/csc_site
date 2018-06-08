@@ -3,7 +3,7 @@ import argparse
 
 from itg2.stats_xml import TopScores
 import db.models as models
-from db.models import Song, Chart, Score, MYSQL_DB
+from db.models import Song, Chart, Score, connect_to_db
 
 
 if __name__ == '__main__':
@@ -12,10 +12,12 @@ if __name__ == '__main__':
     args = ap.parse_args()
     stats_path = '/'.join([args.datadir, 'Stats.xml'])
 
+    db = connect_to_db()
+
     top_scores = TopScores(stats_path)
     for hs in top_scores.scores:
 
-        with MYSQL_DB.atomic():
+        with db.atomic():
             this_song, song_created = Song.get_or_create(
                     title=hs.song_title,
                     length=hs.song_length,

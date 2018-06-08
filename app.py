@@ -6,7 +6,7 @@ import cherrypy
 
 from itg2.stats_xml import HighScore
 from peewee import MySQLDatabase
-from db.models import MYSQL_PASSWORD, Song, Chart, Score
+from db.models import connect_to_db, Song, Chart, Score
 
 PORT = 25777 # high but not 28000-28500
 TMPL_FMT = 'templates/{}.html.j2'
@@ -48,8 +48,7 @@ class Website(object):
 
     @cherrypy.expose
     def itg(self):
-        db = MySQLDatabase('ke2mcbri', user='ke2mcbri', charset='utf8mb4',
-                password=MYSQL_PASSWORD, host='caffeine')
+        db = connect_to_db()
         with db.atomic():
             results = Song.select(
                     Song.title, Song.length,
@@ -62,7 +61,7 @@ class Website(object):
                     Score.miss, Score.ng, Score.ok,
                     ).join(Chart).join(Score).where(Score.percent >= 96.0
                             ).order_by(Score.percent.desc()).limit(10)
-
+        db.close()
         tmpled_songs = []
         for record in results:
             tmpled_songs.append(template_highscore(record))
