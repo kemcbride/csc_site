@@ -30,6 +30,7 @@ class Song(Model):
     bpm = CharField(max_length=80, null=True)
     length = CharField(max_length=80, )
     artist = CharField(max_length=80, null=True)
+    genre = TextField(null=True)
 
     class Meta:
         database = connect_to_db()
@@ -42,11 +43,15 @@ class Chart(Model):
     id = AutoField()
 
     song_id = ForeignKeyField(Song)
-    pack = CharField(max_length=80, null=True)
-    level = IntegerField(null=True)
     title = CharField(max_length=80)
     steps_type = CharField(max_length=20)
-    step_artist = CharField(max_length=80, null=True) # need sm source :|
+
+    pack = CharField(max_length=80, null=True) # need sm source
+    level = IntegerField(null=True)
+    step_artist = CharField(max_length=80, null=True)
+    banner = TextField(null=True)
+    background = TextField(null=True)
+    genre = TextField(null=True)
 
     taps = IntegerField()
     jumps = IntegerField()
@@ -71,7 +76,7 @@ class Score(Model):
     grade = CharField(max_length=20)
     percent = FloatField()
 
-    player_tag = CharField(max_length=4, null=True)
+    player_tag = CharField(max_length=4, null=True, default='LR')
     datetime = TextField(null=True)
     modifiers = CharField(max_length=120)
 
