@@ -1,15 +1,23 @@
 #! /users/ke2mcbri/www/app/bin/python
-import argparse
+import click
+import glob
+from simfile import Simfile
 
 from itg2.stats_xml import TopScores
 import db.models as models
 from db.models import Song, Chart, Score, connect_to_db
 
 
-if __name__ == '__main__':
-    ap = argparse.ArgumentParser()
-    ap.add_argument('datadir', type=str)
-    args = ap.parse_args()
+STEP_KEYS = ['1', '2', '4']
+
+
+@click.group()
+def cli():
+    pass
+
+
+@click.command()
+def stats(datadir):
     stats_path = '/'.join([args.datadir, 'Stats.xml'])
 
     db = connect_to_db()
@@ -84,3 +92,88 @@ if __name__ == '__main__':
                         'ok': hs.holdnotes['OK'],
                         }
                     )
+
+
+@click.command()
+def pack(datadir):
+    """ Use the sm data to supplement what we know from the stats.xml
+     - we should probably look up the chart *first*, and then update the song via
+         the chart's foreign key
+     - NOTE: i pretty much just made up the note counting algo and manually checked
+     Twinkle Twinkle and Danger (Pinocchio) so I wouldn't really trust it...
+    """
+    packname = pack_path.split('/')[-1] if pack_path.split('/')[-1] else pack_path.split('/')[-2]
+    simpaths = glob.iglob(f'{pack_path}/*/*.sm')
+    sims = [Simfile(path) for path in simpaths]
+
+    for sim in sims:
+        title = sim['TITLE']
+        subtitle = sim['SUBTITLE']
+        artist = sim['ARTIST']
+        bpm = sim['DISPLAYBPM']
+        pack = sim['CREDIT']
+        banner = sim['BANNER']
+        bg = sim['BACKGROUND']
+        genre = sim['GENRE']
+
+        for chart in sim.charts:
+            meter = chart.meter
+            difficulty = chart.difficulty
+            description = chart.description
+            radar = chart.radar # [just a list of 0.0-1.0 values]
+            print(f'{pack} // {title} // {difficulty}')
+
+            notes = chart.notes
+            # now I can count the notes and try to equate them...
+            note_counts = count_notes(notes)
+
+
+def count_notes(notes):
+    num_taps = 0
+    num_holds = 0
+    num_jumps = 0
+    num_hands = 0
+    num_rolls = 0
+    num_mines = 0
+
+    holds = [False, False, False, False]
+    for row in notes:
+        line = row[1]
+        curr_notes = len(list(filter(lambda s: s in STEP_KEYS, line)))
+        # simultaneous notes resulting in a jump or hand
+        if curr_notes >= 2:
+            num_jumps += 1
+        if curr_notes >= 3:
+            num_hands += 1
+
+        for idx, note in enumerate(line):
+            curr_holds = len(list(filter(lambda s: s, holds)))
+            # held notes resulting in a hand (doesn't count as jump if only 2)
+
+            if note == '1':
+                num_taps += 1
+                if curr_holds > 2:
+                    num_hands += 1
+            elif note == '2':
+                num_taps += 1
+                num_holds += 1
+                holds[idx] = True
+                if curr_holds > 2:
+                    num_hands += 1
+            elif note == 'M':
+                num_mines += 1
+            elif note == '4':
+                num_rolls += 1
+                holds[idx] = True
+                if curr_holds > 2:
+                    num_hands += 1
+            elif note == '3':
+                holds[idx] = False
+    return {
+            'num_taps': num_taps,
+            'num_holds': num_holds,
+            'num_jumps': num_jumps,
+            'num_hands': num_hands,
+            'num_rolls': num_rolls,
+            'num_mines': num_mines,
+            }
