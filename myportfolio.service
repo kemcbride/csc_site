@@ -1,0 +1,15 @@
+# Put this at /etc/systemd/system/myportfolio.service
+# But keep it in repo for changes if i need to make changes.
+[Unit]
+Description=Serve csc_site
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/home/pi/github/csc_site
+ExecStart=/home/pi/github/csc_site/bin/python -m app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
