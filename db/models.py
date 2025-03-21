@@ -1,8 +1,9 @@
 from peewee import *
+import os
 
-MYSQL_PASSWORD = "dogsarecool"
+MYSQL_PASSWORD = None
 if MYSQL_PASSWORD is None:
-    with open('/users/ke2mcbri/ceo-mysql-info', 'r') as f:
+    with open(os.path.join(os.getcwd(), 'mysql.env'), 'r') as f:
         for line in f:
             if line.startswith('Password'):
                 MYSQL_PASSWORD = line.split()[-1]
@@ -14,8 +15,8 @@ CHART_KEY_MEMBERS = [
 
 
 def connect_to_db():
-    mysql_db = MySQLDatabase('ke2mcbri', user='ke2mcbri', charset='utf8mb4',
-            password=MYSQL_PASSWORD, host='caffeine')
+    mysql_db = MySQLDatabase('myportfoliodb', user='myportfolio', charset='utf8mb4',
+        password=MYSQL_PASSWORD, host='localhost')
     return mysql_db
 
 
