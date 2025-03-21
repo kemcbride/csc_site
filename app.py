@@ -23,13 +23,18 @@ CTNT_FMT = 'content/{}.content.html'
 CONFIG_DICT = {
     'global': {
         'server.socket_port': PORT,
-        'server.socket_host': '129.97.134.72',  # caffeine
+        'server.socket_host': '0.0.0.0',
+        # 'server.socket_host': '129.97.134.72',  # caffeine
         'tools.caching.on': True,
         'tools.caching.delay': 3600,
     },
+    '/': {
+        'tools.staticdir.root': os.path.abspath(os.getcwd()),
+        'tools.staticdir.dir': "",
+        'tools.staticdir.on': True,
+    },
     STATIC_PATH: {
         'tools.staticdir.on': True,
-        'tools.staticdir.root': STATIC_PATH,
         'tools.staticdir.dir': STATIC_PATH,
     },
 }

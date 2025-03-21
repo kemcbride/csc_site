@@ -1,10 +1,12 @@
 from peewee import *
 
-with open('/users/ke2mcbri/ceo-mysql-info', 'r') as f:
-    for line in f:
-        if line.startswith('Password'):
-            MYSQL_PASSWORD = line.split()[-1]
-            break
+MYSQL_PASSWORD = "dogsarecool"
+if MYSQL_PASSWORD is None:
+    with open('/users/ke2mcbri/ceo-mysql-info', 'r') as f:
+        for line in f:
+            if line.startswith('Password'):
+                MYSQL_PASSWORD = line.split()[-1]
+                break
 
 CHART_KEY_MEMBERS = [
         'title', 'num_taps', 'num_holds',
