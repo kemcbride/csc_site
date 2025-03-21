@@ -1,4 +1,5 @@
 from peewee import *
+import datetime
 import os
 
 MYSQL_PASSWORD = None
@@ -93,6 +94,21 @@ class Score(Model):
 
     ng = IntegerField()
     ok = IntegerField()
+
+    class Meta:
+        database = connect_to_db()
+        indexes = (
+                (('chart_id', 'percent', 'fantastic', 'excellent', 'great', 'miss'),
+                    True),
+                )
+
+class TimelinePost(Model):
+    id = AutoField()
+
+    name = CharField()
+    email = CharField()
+    content = TextField()
+    created_at = DateTimeField(default=datetime.datetime.now())
 
     class Meta:
         database = connect_to_db()

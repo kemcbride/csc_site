@@ -22,6 +22,7 @@ Pygments>=2.7.4
 PyMySQL>=0.8.1
 python-dateutil>=2.6.1
 pytz>=2017.3
+requests>=2.0
 simfile>=0.0.0
 simplegeneric>=0.8.1
 six>=1.11.0

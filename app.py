@@ -6,7 +6,8 @@ import cherrypy
 
 from itg2.stats_xml import HighScore
 from peewee import MySQLDatabase
-from db.models import connect_to_db, Song, Chart, Score
+from playhouse.shortcuts import model_to_dict
+from db.models import connect_to_db, Song, Chart, Score, TimelinePost
 
 from util import (
     STATIC_PATH,
@@ -48,6 +49,12 @@ for DIRNAME in KODONODO_DIRS:
 
 def template_highscore(record):
     with open(TMPL_FMT.format('stats_song'), 'r') as tmpl_file:
+        song_template = Template(tmpl_file.read())
+    return song_template.render(r=record)
+
+
+def template_timelinepost(record):
+    with open(TMPL_FMT.format('timelinepost'), 'r') as tmpl_file:
         song_template = Template(tmpl_file.read())
     return song_template.render(r=record)
 
@@ -121,6 +128,38 @@ class Website(object):
         with open(TMPL_FMT.format('basic'), 'r') as tmpl_file:
             basic_template = Template(tmpl_file.read())
         return basic_template.render(content=content)
+
+    @cherrypy.expose
+    def post_timelinepost(self, name, email, content):
+        # name = request.form['name']
+        # email = request.form['email']
+        # content = request.form['content']
+        timeline_post = TimelinePost.create(name=name, email=email, content=content)
+        return model_to_dict(timeline_post)
+
+    @cherrypy.expose
+    def get_timelineposts(self):
+        return json.dumps({
+            "timeline_posts": [model_to_dict(p) for p in 
+                TimelinePost.select(TimelinePost.id, TimelinePost.name, TimelinePost.email, TimelinePost.content)]
+        })
+
+    @cherrypy.expose
+    def timeline(self):
+        tmpled_posts = []
+        db = connect_to_db()
+        with db.atomic():
+            results = TimelinePost.select()
+            for record in results:
+                tmpled_posts.append(template_timelinepost(record))
+
+        db.close()
+        content = ''.join(tmpled_posts)
+
+        with open(TMPL_FMT.format('basic'), 'r') as tmpl_file:
+            basic_template = Template(tmpl_file.read())
+        return basic_template.render(content=content)
+
 
 
 # I have no idea if this is necessary, but I'm leaving it here.
