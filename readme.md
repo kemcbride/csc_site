@@ -32,3 +32,15 @@ and also can work with the database maybe even??? who knows.
 
 wouldn't THAAT be cool? yeah. maybe.
 idk. we'll see.
+
+
+### Useful commands
+
+`time sudo docker build -t csc_site_image . --platform linux/x86_64`
+- Most of the builds I was trying (to use arm64) were failing with vague errors (no logs, pip install -r requirements.txt failed with error code 159), but this one is finally working.
+- Yes, I'm basing it crurently on jupyter/minimal-notebook, so i am getting extra jupyter packages, but at least pandas & numpy are there and it's working.
+- I might try on a slimmer build some time soon now that i feel better about using other arches.
+
+- Run via docker:
+`sudo docker run -p "25777:25777" --name csc_site -d csc_site_image`
+- Note: the name of the image MUST go at the end!
