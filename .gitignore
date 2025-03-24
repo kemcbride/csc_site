@@ -10,6 +10,7 @@ assets/fonts
 assets/css/bootstrap.min.css
 itg2/data
 itg2/packs
+mysql.env
 **.mypy*
 **.pyc
 **.swp
