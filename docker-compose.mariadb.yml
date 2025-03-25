@@ -1,0 +1,9 @@
+services:
+  db_standalone:
+    image: yobasystems/alpine-mariadb
+    env_file:
+      - mysql_image.env
+    volumes:
+      - /data/example/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"

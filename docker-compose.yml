@@ -1,0 +1,23 @@
+services:
+  csc_site:
+    container_name: csc_site_image
+    platform: linux/x86_64
+    build: .
+    restart: always
+    ports:
+      - 25777:25777
+    volumes:
+      - .:/csc_site
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    image: yobasystems/alpine-mariadb
+    restart: always
+    ports:
+      - 3306:3306
+    env_file:
+      - mysql_image.env
+    volumes:
+      - /data/example/mysql:/var/lib/mysql

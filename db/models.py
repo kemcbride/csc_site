@@ -16,8 +16,8 @@ CHART_KEY_MEMBERS = [
 
 
 def connect_to_db():
-    mysql_db = MySQLDatabase('myportfoliodb', user='myportfolio', charset='utf8mb4',
-        password=MYSQL_PASSWORD, host='localhost')
+    mysql_db = MySQLDatabase('myportfoliodb', user='mysql', charset='utf8mb4',
+        password=MYSQL_PASSWORD, host='mysql')
     return mysql_db
 
 

@@ -4,14 +4,6 @@ WORKDIR /csc_site
 
 COPY requirements.txt .
 
-RUN apt update
-
-RUN apt install -y gcc g++ gfortran libopenblas-dev liblapack-dev pkg-config python3-pip python3-dev
-# Run heavy specific installs first separately so they can be cached, faster builds.
-RUN pip install numpy>=1.14.1
-
-RUN pip install pandas>=0.22.0
-
 RUN pip install peewee>=3.4.0
 
 RUN pip install -r requirements.txt
