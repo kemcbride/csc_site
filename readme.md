@@ -44,3 +44,9 @@ idk. we'll see.
 - Run via docker:
 `sudo docker run -p "25777:25777" --name csc_site -d csc_site_image`
 - Note: the name of the image MUST go at the end!
+
+- Add group cpu/memory limits to the pi? https://dalwar23.com/how-to-fix-no-memory-limit-support-for-docker-in-raspberry-pi/
+```
+  nano /boot/firmware/cmdline.txt
+cgroup_enable=memory swapaccount=1 cgroup_memory=1 cgroup_enable=cpuset
+```
