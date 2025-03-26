@@ -1,11 +1,10 @@
 #! /users/ke2mcbri/www/app/bin/python
 import argparse
 
-from db.models import Song, Chart, Score, connect_to_db
+from db.models import TABLES, connect_to_db
 
 
 ACTIONS = ['create', 'drop']
-TABLES = [Song, Chart, Score] # in order of dependency
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()

@@ -1,4 +1,4 @@
-FROM python:slim
+FROM jupyter/minimal-notebook
 
 WORKDIR /csc_site
 

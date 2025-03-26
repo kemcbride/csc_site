@@ -2,13 +2,11 @@ from peewee import *
 import datetime
 import os
 
-MYSQL_PASSWORD = None
-if MYSQL_PASSWORD is None:
-    with open(os.path.join(os.getcwd(), 'mysql.env'), 'r') as f:
-        for line in f:
-            if line.startswith('Password'):
-                MYSQL_PASSWORD = line.split()[-1]
-                break
+MYSQL_HOST = os.environ.get("MARIADB_HOST")
+MYSQL_DATABASE = os.environ.get("MARIADB_DATABASE")
+MYSQL_USER = os.environ.get("MARIADB_USER")
+MYSQL_PASSWORD = os.environ.get("MARIADB_PASSWORD")
+
 
 CHART_KEY_MEMBERS = [
         'title', 'num_taps', 'num_holds',
@@ -16,8 +14,9 @@ CHART_KEY_MEMBERS = [
 
 
 def connect_to_db():
-    mysql_db = MySQLDatabase('myportfoliodb', user='mysql', charset='utf8mb4',
-        password=MYSQL_PASSWORD, host='mysql')
+    print(MYSQL_HOST, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD)
+    mysql_db = MySQLDatabase(MYSQL_DATABASE, user=MYSQL_USER, charset='utf8mb4',
+        password=MYSQL_PASSWORD, host=MYSQL_HOST)
     return mysql_db
 
 
@@ -116,3 +115,5 @@ class TimelinePost(Model):
                 (('chart_id', 'percent', 'fantastic', 'excellent', 'great', 'miss'),
                     True),
                 )
+
+TABLES = [TimelinePost, Song, Chart, Score] # in order of dependency
