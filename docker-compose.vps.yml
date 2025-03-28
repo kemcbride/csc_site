@@ -1,0 +1,40 @@
+services:
+  csc_site:
+    container_name: csc_site
+    image: csc_site_image_deb_slim
+    build: 
+      dockerfile: Dockerfile.deb.slim
+    restart: always
+    env_file:
+      - mysql_image.env
+    volumes:
+      - .:/csc_site
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    image: yobasystems/alpine-mariadb
+    restart: always
+    env_file:
+      - mysql_image.env
+    volumes:
+      - /data/example/mysql:/var/lib/mysql
+
+  nginx:
+    container_name: nginx
+    image: jonasal/nginx-certbot
+    restart: always
+    environment:
+      - CERTBOT_EMAIL=kemcbride28@gmail.com
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - nginx_secrets:/etc/letsencrypt
+      - ./vps_user_conf.d/csc_site.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - csc_site
+
+volumes:
+  nginx_secrets:
