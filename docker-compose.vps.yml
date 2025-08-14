@@ -7,19 +7,32 @@ services:
     restart: always
     env_file:
       - mysql_image.env
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 128M
     volumes:
       - .:/csc_site
-      # depends_on:
-      # - mysql
+    depends_on:
+        - mysql
 
-      # mysql:
-      # container_name: mysql
-      # image: yobasystems/alpine-mariadb
-      # restart: always
-      # env_file:
-      # - mysql_image.env
-      # volumes:
-      # - ./data:/var/lib/mysql
+  mysql:
+    container_name: mysql
+    image: yobasystems/alpine-mariadb
+    restart: always
+    env_file:
+      - mysql_image.env
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+        reservations:
+          memory: 768M
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./csc_site_mariadb.cnf:/etc/mysql/mariadb.conf.d/csc_site_mariadb.cnf:ro
 
   nginx:
     container_name: nginx
@@ -28,9 +41,21 @@ services:
     ports:
       - 80:80
       - 443:443
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 128M
     volumes:
       - ./vps_user_conf.d/latiosruby.conf:/etc/nginx/conf.d/latiosruby.duckdns.org.conf:ro
       - /etc/letsencrypt/live/latiosruby.duckdns.org/:/etc/letsencrypt/live/latiosruby.duckdns.org/:ro
       - /etc/letsencrypt/archive/latiosruby.duckdns.org/:/etc/letsencrypt/archive/latiosruby.duckdns.org/:ro
     depends_on:
       - csc_site
+      # - certbot
+
+      # certbot:
+      # image: certbot/certbot:latest
+      # volumes:
+      # - ./certbot/www/:/var/www/certbot/:rw
