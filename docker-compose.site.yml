@@ -1,0 +1,14 @@
+services:
+  csc_site:
+    container_name: csc_site
+    image: csc_site_image_deb_slim
+    build: 
+      dockerfile: Dockerfile.deb.slim
+    ports:
+      - 25777:25777
+    restart: always
+    env_file:
+      - mysql_image.env
+    volumes:
+      - .:/csc_site
+

@@ -153,18 +153,12 @@
 
     @font-face {
         font-family: "Chinacat";
-        src: url("../fonts/chinacat/chinrg__.eot"),
-        url("../fonts/chinacat/chinrg__.ttf") format("truetype"),
-        url("../fonts/chinacat/chinrg__.woff") format("woff"),
-        url("../fonts/chinacat/chinrg__.otf") format("opentype");
+        src: url("../fonts/chinacat/chinrg__.ttf"),
     }
 
     @font-face {
         font-family: "Chinacat Thin";
-        src: url("../fonts/chinacat/chint___.eot"),
-        url("../fonts/chinacat/chint___.ttf") format("truetype"),
-        url("../fonts/chinacat/chint___.woff") format("woff"),
-        url("../fonts/chinacat/chint___.otf") format("opentype");
+        src: url("../fonts/chinacat/chint___.ttf"),
     }
 
     @font-face {
@@ -177,10 +171,7 @@
 
     @font-face {
         font-family: "Heffaklump";
-        src: url("../fonts/heffaklump/Heffaklump.eot"),
-        url("../fonts/heffaklump/Heffaklump.ttf") format("truetype"),
-        url("../fonts/heffaklump/Heffaklump.woff") format("woff"),
-        url("../fonts/heffaklump/Heffaklump.otf") format("opentype");
+        src: url("../fonts/heffaklump/Heffaklump.ttf"),
     }
 
     @font-face {

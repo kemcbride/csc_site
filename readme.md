@@ -50,3 +50,12 @@ idk. we'll see.
   nano /boot/firmware/cmdline.txt
 cgroup_enable=memory swapaccount=1 cgroup_memory=1 cgroup_enable=cpuset
 ```
+
+
+### Setup (pipenv, etc) (cloud)
+
+- install pip/python  - `sudo apt install python pipenv`
+- `pipenv --python 3` (cause i don't want to care too much about which python i'm using)
+- `pipenv install` (it will just look at my requirements file anyways? no source bin/activate??)
+- `pipenv run python -m app` to start up the application i guess? ... (can't access from internet but this OUGHT to be correct...)
+
